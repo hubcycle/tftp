@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
 	fd_set rset;
 	ssize_t bytes_received;
 	socklen_t len;
-	const int on = 1;
 	struct sockaddr_in server_addr, client_addr;
 	char *message = "Request received";
 
