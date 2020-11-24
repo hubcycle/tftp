@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
 	printf("done\n");
 	fflush(stdout);
-	
+
 	listenfd = socket(AF_INET, SOCK_DGRAM, 0);
 	bzero(&server_addr, sizeof(server_addr));
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -98,13 +98,17 @@ int main(int argc, char *argv[])
 
 		printf("descriptors set\n");
 		fflush(stdout);
-
-		len = sizeof(client_addr);
-		bzero(buffer, sizeof(buffer));
-		printf("Request received:\n");
-		bytes_received = recvfrom(listenfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&client_addr, &len);
-		buffer[bytes_received] = '\0';
-		printf("%ld\t%s\n", bytes_received, buffer);
-		fflush(stdout);
+		if (fork()==0)
+		{
+			len = sizeof(client_addr);
+			bzero(buffer, sizeof(buffer));
+			printf("Request received:\n");
+			bytes_received = recvfrom(listenfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&client_addr, &len);
+			buffer[bytes_received] = '\0';
+			printf("%ld\t%s\n", bytes_received, buffer);
+			fflush(stdout);
+		}
+		
+		
 	}
 }
