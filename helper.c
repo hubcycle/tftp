@@ -26,3 +26,41 @@ int make_udpsocket_bind(int port)
 
 	return sockfd;
 }
+
+short get_network_to_host_short(char *buffer)
+{
+	short data;
+	memcpy(&data, buffer, sizeof(short));
+	return ntohs(data);
+}
+
+short get_host_to_network_short(short host_short, char *buffer)
+{
+	short data;
+	data = htons(host_short);
+	if (buffer != NULL)
+	{
+		memcpy(buffer, &data, sizeof(short));
+	}
+
+	return data;
+}
+
+size_t copy_n_src_dest(char *dest, const char *src, size_t n)
+{
+	size_t i, length;
+
+	for (i = 0; i < n && src[i] != '\0'; i++)
+	{
+		dest[i] = src[i];
+	}
+
+	length = i + 1;
+
+	while (i < n)
+	{
+		dest[i++] = '\0';
+	}
+
+	return length;
+}

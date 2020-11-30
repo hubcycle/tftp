@@ -1,6 +1,5 @@
 
 #include "packet.h"
-#include "helper.h"
 #include "transfer.h"
 
 void serve_client(struct sockaddr client_addr, PACKET *packet);
@@ -15,44 +14,8 @@ int main(int argc, char *argv[])
 	int sockfd;
 	printf("Utilising port:\t%d\n", port);
 	sockfd = make_udpsocket_bind(port);
-	// struct addrinfo hints, *servinfo;
-	// struct sockaddr_in client_addr;
-	// socklen_t addr_len;
-	// int rv;
-	// pid_t childpid;
-
-	// bzero(&hints, sizeof(struct addrinfo));
-	// hints.ai_family = AF_INET;
-	// hints.ai_socktype = SOCK_DGRAM;
-	// hints.ai_flags = AI_PASSIVE;
-
-	// if ((rv = getaddrinfo(NULL, s_port, &hints, &servinfo)) != 0)
-	// {
-	// 	perror(gai_strerror(rv));
-	// 	exit(EXIT_FAILURE);
-	// }
-
-	// for (struct addrinfo *itr = servinfo; itr != NULL; itr = itr->ai_next)
-	// {
-	// 	if ((sockfd = socket(itr->ai_family, itr->ai_socktype, itr->ai_protocol)) == -1)
-	// 	{
-	// 		continue;
-	// 	}
-	// 	if (bind(sockfd, itr->ai_addr, itr->ai_addrlen) == -1)
-	// 	{
-	// 		close(sockfd);
-	// 		continue;
-	// 	}
-	// 	else
-	// 	{
-	// 		break; // Socket binding successful
-	// 	}
-	// }
-
-	// freeaddrinfo(servinfo);
-
+	
 	printf("SERVER: waiting...\n");
-	// fflush(stdout);
 
 	struct sockaddr client_addr;
 	socklen_t addr_len = sizeof(client_addr);
@@ -72,14 +35,21 @@ int main(int argc, char *argv[])
 		}
 		buffer[num_bytes_read] = '\0';
 
+		printf("%d\n", *buffer);
+		fflush(stdout);
+
 		create_string_to_packet(buffer, num_bytes_read, &packet);
 
-		printf("SERVER: got packet from %s\n", inet_ntop(client_addr.sa_family, &client_addr.sa_data, s, sizeof(s)));
-		printf("SERVER: packet is %d bytes in length\n", num_bytes_read);
-		printf("SERVER: packet contains %s\n", buffer);
+		// print_packet(&packet);
+
+		
 
 		if ((childpid = fork()) == 0)
 		{
+			printf("SERVER: got packet from %s\n", inet_ntop(client_addr.sa_family, &client_addr.sa_data, s, sizeof(s)));
+			printf("SERVER: packet is %d bytes in length\n", num_bytes_read);
+			printf("SERVER: packet contains %s\n", buffer);
+
 			close(sockfd);
 
 			serve_client(client_addr, &packet);
@@ -88,6 +58,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
+			// close(sockfd);
 			sleep(3);
 		}
 	}
@@ -99,6 +70,12 @@ void serve_client(struct sockaddr client_addr, PACKET *packet)
 
 	if (packet->opcode == OPCODE_RRQ)
 	{
+		printf("Fulfilling client's RRQ for file %s\n", packet->read_request.filename);
+		send_to_client(client_sockfd, &client_addr, packet);
+	}
+	else if (packet->opcode == OPCODE_WRQ)
+	{
+		printf("Not supported\n");
 	}
 	else
 	{
