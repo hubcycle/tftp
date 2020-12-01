@@ -43,8 +43,6 @@ PACKET *create_string_to_packet(char *buffer, size_t buffer_size, PACKET *packet
 size_t create_packet_to_string(const PACKET *packet, char *buffer);
 int wait_packet(int sockfd, struct sockaddr *client_addr, unsigned short opcode, PACKET *packet);
 
-void print_packet(PACKET *packet);
-
-void print_error(PACKET *packet);
+void print_error(const PACKET *packet);
 
 #endif

@@ -9,9 +9,9 @@ int wait_packet(int sockfd, struct sockaddr *client_addr, unsigned short opcode,
 	errno = 0;
 	while (1)
 	{
-		printf("Waiting for message..");
+		printf("waiting for ack..");
 		num_of_bytes = recvfrom(sockfd, packet_buffer, sizeof(packet_buffer), 0, client_addr, &client_length);
-		printf("Received\n");
+		printf("received\n");
 
 		if (errno != 0)
 		{
@@ -129,14 +129,14 @@ size_t create_packet_to_string(const PACKET *packet, char *buffer)
 	return (n + sizeof(short));
 }
 
-void print_error(PACKET *packet)
+void print_error(const PACKET *packet)
 {
 	if (packet->opcode != OPCODE_ERR)
 	{
 		return;
 	}
 
-	printf("Error received\t:");
+	printf("Error received :\t");
 
 	switch (packet->error.error_code)
 	{
@@ -165,5 +165,5 @@ void print_error(PACKET *packet)
 		break;
 	}
 
-	printf("\tError Message:\t%s\n", packet->error.message);
+	printf("\t[Error Message:\t%s]\n", packet->error.message);
 }

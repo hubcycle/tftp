@@ -16,7 +16,7 @@ bool send_error(int sockfd, struct sockaddr *sockInfo, unsigned short error_code
 	packet.opcode = OPCODE_ERR;
 	packet.error.error_code = error_code;
 	strncpy(packet.error.message, error_message, MAX_STRING_SIZE);
-
+	print_error(&packet);
 	return send_regular(sockfd, sockInfo, &packet);
 }
 

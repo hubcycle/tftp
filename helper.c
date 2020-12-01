@@ -5,7 +5,6 @@ int make_udpsocket_bind(int port)
 	int sockfd;
 	struct sockaddr_in server_addr;
 
-	//create a socket
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
 	if (sockfd == -1)
